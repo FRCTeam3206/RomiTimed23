@@ -1,7 +1,7 @@
 # RomiTimed23
 Learn WPILib by programming the Romi
 
-## Lesson 1: Clone the repo
+## Lesson 1: Clone-ing around
 This repo (short for repository) is stored in the [FRCTeam3206 GitHub account](https://github.com/FRCTeam3206). In order to work with it on your own computer, you will need to [clone](https://git-scm.com/docs/git-clone) it. Cloning creates a local copy of the repository on your computer that is linked to the remote repository stored on GitHub. You will be able to edit this local repository in wPILib VSCode.
 
 There are several ways to clone a repo from GitHub. First, open the [RomiTimed23](https://github.com/FRCTeam3206/RomiTimed23) repo on GitHub. Above the code window, there is a green button that says `<>Code` on it. Click on this button to see a menu with several options to clone the repo. The simplest option, if you have [GitHub Desktop](https://desktop.github.com/) installed is to select `Open in GitHub Desktop`. This will create a clone linked to the remote repository. The clone will be located in the "GitHub" directory under "Documents". 
@@ -123,6 +123,29 @@ git merge "source-branch"
 ```
 `git` will try to integrate the new code into the current branch automatically, but that isn't always possible. If it can't figure out how to do the merge because there are conflicting edits, it will let you know that there has been a merge conflict. Managing and correcting merge conflicts is an advanced topic that we won't cover here.
 
-
 ### The takeaway
 The more frequently you use git, the more benefit you will get from it. Pull from the remote when you start working on code, make branches for the work you are doing, create frequent commits to capture specific, granular changes. Finally, don't be afraid to ask for help.
+
+## Lesson 3: Driving Lessons - Basic Teleop
+outputs: motor configuration, drivetrains
+inputs: joystick, buttons
+
+## Lesson 4: Roaming Romi - Basic Auton
+timed driving
+encoder driving
+
+## Lesson 5: State-us Quo - Advanced Auton
+(States and Catapults?)
+state machines
+complex auton sequences
+
+## Lesson 6: Command and Conqur - Intro to Command Based
+principles of Command Based
+event driven
+scheduler
+Subsystems and Commands
+composition, chaining, lambdas
+
+## Lesson 7: Sense and Sensibility - Sensors and Feedback
+
+

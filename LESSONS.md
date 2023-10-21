@@ -129,6 +129,8 @@ The more frequently you use git, the more benefit you will get from it. Pull fro
 ## Lesson 3: Driving Lessons - Basic Teleop
 outputs: motor configuration, drivetrains
 inputs: joystick, buttons
+driver station & dashboard
+sending data to dashboards (don't use print!)
 
 ## Lesson 4: Roaming Romi - Basic Auton
 timed driving

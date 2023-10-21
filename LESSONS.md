@@ -48,7 +48,10 @@ VS Code has built-in support for managing git repositories, which allows you to 
 #### GitHub Desktop
 [GitHub Desktop](https://desktop.github.com/) is a graphical user interface to the most common features of `git`. You can use this to clone repos, make commits, and push and pull code.
 
-### Making a branch
+### Basic `git` operations
+For the next several sections, we'll use the `git` command line interface for the examples. You can do the same things inside VSCode or with the GitHub Desktop by finding the right menus.
+
+#### Making a branch
 A branch is an isolated copy of the code. You can make any changes you want within a branch without affecting the code in any other branches. You can have as many branches as you want, but having a lot can get hard to manage. Once you have made and tested your changes, you can `merge` the code from your branch back to the `main` branch to make it part of the robot code. 
 
 Always work on a branch since it isolates your changes and allows mutliple contributors to work on the code simultaneously without overwriting one anothers changes.
@@ -59,6 +62,8 @@ If you don't already have it open, load your local repo in WPILib VSCode. Open a
 git checkout -b "your-branch-name"
 ```
 This command both creates and checks-out (makes active) the new branch. Branch names should be short and descriptive. The name can't contain spaces, so it is common to use dashes between words for readability. 
+
+The branch you create will be based on whatever code is in your current working directory. If you make edits to the code, then create a new branch, your edits will be available in your new branch. 
 
 You can see which branch you are on by typing:
 ```
@@ -72,41 +77,52 @@ git checkout "branch-to-checkout"
 ```
 Make sure that you've committed any changes you want to keep before changing branches.
 
-### committing code to a branch
+#### committing code to a branch
 Now that you are on your own branch go ahead and edit `Robot.java`. For exammple, add a comment with your name at the top of the file and save the file. To store this change in the repo, you need to `commit` it to the repo. There are two steps to making a commit, staging the files and then making the commit. 
 
 First you indicate which files you want to update by `add`ing them to the stage (list of files that will be committed):
 ```
 git add Robot.java
 ```
+To add all files that have been changed, type:
+```
+git add .
+```
+
 Second, you `commit` them to the repo:
 ```
 git commit -m "Short description of the change"
 ```
 The `-m` tells `git commit` to add the text following it as the description of the commit. Good comments a short and help people understand what was changed. Instead of saying "fixed stuff", explain what you fixed, such as "corrected motor ids". You don't have to describe the exact code, since people can see how the code changed when they look at the commit, instead, try to describe why you made the change.
 
+#### Push code to the remote (GitHub)
 Finally, we need to add this to the `GitHub` repository. The first time you `push` a branch to the upstream repository, you need to tell it that you want to add the branch to that repo.
 ```
 git push -u origin "your-branch-name"
 ```
-After that, you'll be able to update the branch by just typing:
+After that, you'll be able to update the branch any time you make a new commit by just typing:
 ```
 git push
 ```
+Whenever you start working on code, you should update the local repo from the remote repe. This will make sure that you are always working from the latest version of the code from GitHub. The opposite of pushing code to the repo is pulling it from the repo:
+```
+git pull
+```
+
+If there is a branch on GitHub that you want to work on, but it isn't on the computer you are currently on, you can crete a local tracking branch with:
+```
+git fetch
+git checkout "name-of-remote-branch"
+```
+
+#### Merging code from another branch
+The primary way that you get code from one branch into another is with the `merge` command. 
+```
+git checkout "destination-branch"
+git merge "source-branch"
+```
+`git` will try to integrate the new code into the current branch automatically, but that isn't always possible. If it can't figure out how to do the merge because there are conflicting edits, it will let you know that there has been a merge conflict. Managing and correcting merge conflicts is an advanced topic that we won't cover here.
 
 
-
-
-
-
-
-### (An incomplete list of) Coding Rules
-* When working on code, always create a branch with a meaningful name followed by your initials (eg. `documentation_CRS`). 
-* Commit frequently and push code to GitHub **every day**. This makes sure that everyone will have access to the latest version of any branch. Think of it as the programmers equivalent to putting away your supplies at the end of the shop time.   
-* For the competition bot code, do not commit directly to `main`. Create a `pull request` and the code will be reviewed and then merged if appropriate. This ensures that the `main` branch represents fully functional code.
-* Before competition, create a new branch for that competition. All edits made during the competition should be made to that branch. After we return, we can review changes and decide which changes we want to merge back to `main`.
-
-
-
-
-When you edit the local repository, the changes are only made on your computer. 
+### The takeaway
+The more frequently you use git, the more benefit you will get from it. Pull from the remote when you start working on code, make branches for the work you are doing, create frequent commits to capture specific, granular changes. Finally, don't be afraid to ask for help.

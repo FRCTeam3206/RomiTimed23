@@ -85,6 +85,14 @@ git commit -m "Short description of the change"
 ```
 The `-m` tells `git commit` to add the text following it as the description of the commit. Good comments a short and help people understand what was changed. Instead of saying "fixed stuff", explain what you fixed, such as "corrected motor ids". You don't have to describe the exact code, since people can see how the code changed when they look at the commit, instead, try to describe why you made the change.
 
+Finally, we need to add this to the `GitHub` repository. The first time you `push` a branch to the upstream repository, you need to tell it that you want to add the branch to that repo.
+```
+git push -u origin "your-branch-name"
+```
+After that, you'll be able to update the branch by just typing:
+```
+git push
+```
 
 
 

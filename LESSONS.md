@@ -1,5 +1,4 @@
-# RomiTimed23
-Learn WPILib by programming the Romi
+# Programming WPILib on a Romi
 
 ## Lesson 1: Clone-ing around
 This repo (short for repository) is stored in the [FRCTeam3206 GitHub account](https://github.com/FRCTeam3206). In order to work with it on your own computer, you will need to [clone](https://git-scm.com/docs/git-clone) it. Cloning creates a local copy of the repository on your computer that is linked to the remote repository stored on GitHub. You will be able to edit this local repository in wPILib VSCode.
@@ -24,6 +23,8 @@ Open this directory and you will see several .java files.
 Go ahead and open `Robot.java` and take a look at the code.
 
 ----
+<div class="page"/>
+
 ## Lesson 2: A bit of `git`
 *NOTE: If you are using the shared CREATE_XX computer, you are signed in to GitHub with the "RoyalT-Wrecks" account. Please don't sign in with your own account on these computers. If you are working from your own computer, please use your own GitHub account. If you have any trouble using git or GitHub, post a note on the team Discord.*
 
@@ -126,6 +127,9 @@ git merge "source-branch"
 ### The takeaway
 The more frequently you use git, the more benefit you will get from it. Pull from the remote when you start working on code, make branches for the work you are doing, create frequent commits to capture specific, granular changes. Finally, don't be afraid to ask for help.
 
+----
+<div class="page"/>
+
 ## Lesson 3: Driving Lessons - Basic Teleop
 The driver-controlled portion of the match is called `telop`. During this part of the game, the driver is primarily in control of the robot and commands are relayed from controllers attached to the drive station to the robot through the FMS (field managemnt system). Typically, the drive team consists of a driver, a mechanism operator, and a drive coach. 
 
@@ -134,11 +138,10 @@ The primary way that the drive and mechanism operator control the robot is via a
 
 > **JAVA Concept: `import`**
 >
-> Java and WPILib provide a lot of classes that you can use in your programs, but they aren't avaiable by default in your code. In order to access them, you have to `import` them into the `namespace` of your program. You do this by using the `import` statement followed by the path to the class that you want to import. You must import classes into any file that needs them. 
->
->Typically, `import` statements are located at the top of a `.java` file, just after the `package` statement. 
+> Java and WPILib provide a lot of classes that you can use in your programs, but they aren't avaiable by default in your code. In order to access them, you have to `import` them into the `namespace` of your program. You do this by using the `import` statement followed by the path to the class that you want to import. You must import classes into any file that needs them. Typically, `import` statements are located at the top of a `.java` file, just after the `package` statement. 
 
-**NOTE:** Before making any changes to your code, create a new branch.
+> **NOTE**
+> Before making any changes to your code, create a new branch.
 
 The first step is to `import` the class so that we can interact with the controller. The class that we're going to use it the [`XboxController`](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/XboxController.html) class, which works with the Logitech controllers set to 'X' mode. It's located in `edu.wpi.first.wpilibj`. Add this line after the other imports at the top of the `Robot.java` file:
 
@@ -185,11 +188,19 @@ First, power on the Romi and connect to it's WiFi access point. You should also 
 You start the simulation by clicking on the WPILib icon above the code window and selecting `WPILib: Simulate Robot Code`. This will compile your code and let you know if there are any errors. If the code compiles, then it will open a `dashboard` called `glass` that shows you information about the robot status.
 
 
+> **WIP**
+>
+>outputs: motor configuration, drivetrains
+>
+>inputs: joystick, buttons
+>
+>driver station & dashboard
+>
+>telemetry: sending data to dashboards (don't use print!)
 
-outputs: motor configuration, drivetrains
-inputs: joystick, buttons
-driver station & dashboard
-telemetry: sending data to dashboards (don't use print!)
+<!--
+----
+<div class="page"/>
 
 ## Lesson 4: Roaming Romi - Basic Auton
 timed driving
@@ -210,3 +221,4 @@ composition, chaining, lambdas
 ## Lesson 7: Sense and Sensibility - Sensors and Feedback
 
 
+-->

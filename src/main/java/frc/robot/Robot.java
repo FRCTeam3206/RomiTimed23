@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     }
   }
 
+// hello
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {}

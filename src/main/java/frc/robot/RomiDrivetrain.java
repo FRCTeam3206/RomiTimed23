@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import java.util.Random;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -51,5 +52,12 @@ public class RomiDrivetrain {
 
   public double getRightDistanceInch() {
     return m_rightEncoder.getDistance();
+  }
+
+  public String returnWord() {
+    String[] words = {"long", "short", "redFlag"};
+    Random rand = new Random();
+    
+    return words[rand.nextInt(words.length)];
   }
 }

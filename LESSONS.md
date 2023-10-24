@@ -197,28 +197,3 @@ You start the simulation by clicking on the WPILib icon above the code window an
 >driver station & dashboard
 >
 >telemetry: sending data to dashboards (don't use print!)
-
-<!--
-----
-<div class="page"/>
-
-## Lesson 4: Roaming Romi - Basic Auton
-timed driving
-encoder driving
-
-## Lesson 5: State-us Quo - Advanced Auton
-(States and Catapults?)
-state machines
-complex auton sequences
-
-## Lesson 6: Command and Conqur - Intro to Command Based
-principles of Command Based
-event driven
-scheduler
-Subsystems and Commands
-composition, chaining, lambdas
-
-## Lesson 7: Sense and Sensibility - Sensors and Feedback
-
-
--->

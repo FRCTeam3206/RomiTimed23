@@ -187,6 +187,44 @@ First, power on the Romi and connect to it's WiFi access point. You should also 
 
 You start the simulation by clicking on the WPILib icon above the code window and selecting `WPILib: Simulate Robot Code`. This will compile your code and let you know if there are any errors. If the code compiles, then it will open a `dashboard` called `glass` that shows you information about the robot status.
 
+### Dashboards
+
+As mentioned above, when you start the code that operates the Romi, a [dashboard](https://docs.wpilib.org/en/stable/docs/software/dashboards/index.html) will open on your screen that displays data about your robot. The dashboard that we use with the Romi is called [glass](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/index.html), but there are also others such as SmartDashboard and Shuffleboard. The choice of dashboard depends on what the drivers and programmers prefer for their particular robot.
+
+The information displayed is sent from the robot to the dashboard via a protocol called [Network Tables](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html). This protocol supports sharing information between the robot and the computer and can be used to both read values from the robot and send values from the driver station to the robot. When you look at `glass`, you'll see that some information about the robot is already displayed. You can add other information that you want to display from within your program.
+
+Open `RobotDrivetrain.java` and look through it. As you scroll through the code you may notice that, in addition to the motors, there are also encoders on each wheel. Encoders allow you to keep track of how much a wheel or other shaft has rotated. By applying a conversion factor to our Romi's encoders, we can convert the number of wheel rotations to a distance traveled by the wheel. The `RomiDrivetrain` class provides three methods to let us work with the on-board encoders:
+
+```java
+  public void resetEncoders() {
+    m_leftEncoder.reset();
+    m_rightEncoder.reset();
+  }
+```
+This does what it says and resets the encoders, which means that it causes them to reset to read 0. This can be useful when you want to measure how far the Romi has driven from a particular starting point.
+
+```java
+  public double getLeftDistanceInch() {
+    return m_leftEncoder.getDistance();
+  }
+
+  public double getRightDistanceInch() {
+    return m_rightEncoder.getDistance();
+  }
+  ```
+  These two methods read the value from the left and right encoders respectively. The value is scaled to report the linear distance traveled by the wheel.
+
+  Let's display the distance driven by the Romi on our dashboard. Open your `Robot.java` file. We'll use the `SmartDashboard` class to send the data to our dashboard. This class is already imported, so we don't need to add an import statement for it.
+
+  Information that is about your robot and is relevant during every can be written to the dashboard via the SmartDashboard `put...()` methods. 
+
+  ```java
+      SmartDashboard.putNumber("Left Distance (in)", m_drivetrain.getLeftDistanceInch());
+      SmartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch());
+``` 
+
+
+
 
 > **WIP**
 >
@@ -197,6 +235,9 @@ You start the simulation by clicking on the WPILib icon above the code window an
 >driver station & dashboard
 >
 >telemetry: sending data to dashboards (don't use print!)
+
+
+
 
 <!--
 ----

@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     smartDashboard.putNumber("Left Distance (in)", m_drivetrain.getLeftDistanceInch());
-    smartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch());)
+    smartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch());
   }
 
   /**

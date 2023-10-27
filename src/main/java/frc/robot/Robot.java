@@ -98,6 +98,7 @@ public class Robot extends TimedRobot {
     if (m_controller.getBButton() == true) {
       m_drivetrain.resetEncoders();
     }
+    // resets the encoder - distance value when the B button is pressed
   }
 
   /** This function is called once when the robot is disabled. */

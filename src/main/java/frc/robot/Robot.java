@@ -91,6 +91,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_drivetrain.arcadeDrive(m_controller.getLeftY(), m_controller.getRightX());
+    if (m_controller.getBButton()) {
+      m_drivetrain.resetEncoders();
+      m_drivetrain.arcadeDrive(.5, 0);
+    }
   }
 
   /** This function is called once when the robot is disabled. */

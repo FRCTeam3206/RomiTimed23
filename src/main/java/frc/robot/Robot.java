@@ -49,7 +49,10 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    smartDashboard.putNumber("Left Distance (in)", m_drivetrain.getLeftDistanceInch());
+    smartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch());)
+  }
 
   /**
    * This autonomous (along with the chooser code above) shows how to select between different

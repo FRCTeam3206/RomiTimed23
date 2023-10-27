@@ -218,13 +218,10 @@ This does what it says and resets the encoders, which means that it causes them 
 
   Information that is about your robot and is relevant during every can be written to the dashboard via the SmartDashboard `put...()` methods. 
 
-  ```java
+```java
       SmartDashboard.putNumber("Left Distance (in)", m_drivetrain.getLeftDistanceInch());
       SmartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch());
 ``` 
-
-
-
 
 > **WIP**
 >

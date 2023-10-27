@@ -25,6 +25,8 @@ public class Robot extends TimedRobot {
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(Constants.InputDevices.XBOX_CONTROLLER);
 
+  private String mode;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -44,8 +46,10 @@ public class Robot extends TimedRobot {
    * SmartDashboard integrated updating.
    */
   @Override
-  public void robotPeriodic() {}
-
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("Left Distance (in)", m_drivetrain.getLeftDistanceInch());
+    SmartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch());
+  }
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
    * autonomous modes using the dashboard. The sendable chooser code works with the Java
@@ -81,12 +85,29 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    mode = "normal";
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_drivetrain.arcadeDrive(m_controller.getLeftY(), m_controller.getRightX());
+    // Changes mode based on button pressed (Y for slow mode and A for normal)
+    if (m_controller.getYButton() == true) {
+      mode = "slow";
+    } else if (m_controller.getAButton() == true) {
+      mode = "normal";
+    }
+    // Drives based on mode
+    if (mode == "normal") {
+      m_drivetrain.arcadeDrive(-m_controller.getLeftY(), 0.7*m_controller.getRightX());
+    } else if (mode == "slow") {
+      m_drivetrain.arcadeDrive(-0.5*m_controller.getLeftY(), 0.7*m_controller.getRightX());
+    }
+    // Resets encoders when B button pressed
+    if (m_controller.getBButtonPressed() == true) {
+      m_drivetrain.resetEncoders();
+    }
   }
 
   /** This function is called once when the robot is disabled. */

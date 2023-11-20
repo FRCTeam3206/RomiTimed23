@@ -197,3 +197,19 @@ You start the simulation by clicking on the WPILib icon above the code window an
 >driver station & dashboard
 >
 >telemetry: sending data to dashboards (don't use print!)
+
+
+----
+<div class="page"/>
+
+## Lesson 4: 
+
+```mermaid
+---
+title: Simple Switch
+---
+stateDiagram-v2
+  direction LR
+  off --> on: move up
+  on --> off: move down
+```

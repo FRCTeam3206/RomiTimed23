@@ -25,6 +25,9 @@ public class Robot extends TimedRobot {
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(0);
 
+  private static final double TARGET_DISTANCE = 24;  // inches
+  private int autoState = 1;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -65,7 +68,7 @@ public class Robot extends TimedRobot {
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
 
-    m_drivetrain.resetEncoders();
+    autoState = 1;
   }
 
   /** This function is called periodically during autonomous. */
@@ -77,7 +80,29 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        // Put default auto code here
+        defaultAuto();
+        break;
+    }
+  }
+
+  private void defaultAuto() {
+    switch(autoState) {
+      case 1:  // initialize
+        m_drivetrain.resetEncoders();
+        autoState++;
+        break;
+      case 2:  // execute (drive to target)
+        m_drivetrain.arcadeDrive(0.5, 0);
+        if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+          autoState++;
+        }
+        break;
+      case 3:  // end
+        m_drivetrain.arcadeDrive(0, 0);
+        autoState++;
+        break;
+      default:  // done
+        m_drivetrain.arcadeDrive(0, 0);  // feed the watchdog
         break;
     }
   }

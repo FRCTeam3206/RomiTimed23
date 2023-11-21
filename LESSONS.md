@@ -202,7 +202,13 @@ You start the simulation by clicking on the WPILib icon above the code window an
 ----
 <div class="page"/>
 
-## Lesson 4: 
+## Lesson 4: Roaming Romi - Basic Autonomous
+### State Machines
+Every match starts with a period of time, typically 15 seconds, during which the robot can score points autonomously, often called auton. During auton the robot must move and act on its own without recieving any input from the operators. To be successful in auton, you'll want to be able to use sensors to provide feedback about the robots current **state** and then use this information to make decisions about what the robot should do next.
+
+In engineering, this type of system is often described as a [**state machine**](https://en.wikipedia.org/wiki/Finite-state_machine). 
+
+A light switch is an example of a state machine. The switch has two states, "on" and "off" and clearly defined transitions between those states. This can be represented with a state diagram like:
 
 ```mermaid
 ---
@@ -210,6 +216,169 @@ title: Simple Switch
 ---
 stateDiagram-v2
   direction LR
+  off: Lights Off
+  on: Lights On
+  [*] --> off
   off --> on: move up
   on --> off: move down
 ```
+A [state diagram](https://en.wikipedia.org/wiki/State_diagram) helps you keep track of what states a system can be in and what causes it to move from one system to another. Each state is represented by a box and each transition is an arrow leading from one box to another.
+
+When the robot is operating autonomously, it will need some form of feedback to "know" when to transistion from one state to the next. This feedback could come from a timer running on the robot, a sensor measuring the internal state (such as the wheel encoders or a gyroscope), or a sensor detecting an external stimulus (such as a color sensor detecting a game piece or a camera measuring the position of an April Tag). 
+
+Let's try some simple auton examples on the Romi.
+
+### Driving a certain distance
+You can use the encoders on your Romi wheels to measure how far the robot has traveled. This provides the feedback needed to write an auton that has the robot drive forward a certain distance. The state diagram for this is:
+
+``` mermaid
+---
+title: Driving forward 24"
+---
+  stateDiagram-v2
+  %% direction LR
+  ready: Ready
+  drive: Driving
+  stopped: Stopped
+  [*] --> ready: initialize()#59;
+  ready --> drive
+  drive --> drive: Distance < 24"\ndrive(power)#59;
+  drive --> stopped: Distance >= 24"\nstop()#59;
+  stopped --> [*]
+```
+
+This state diagram demonstrates three phases common to every autonomous command. These phases are initialize, execute, and end.
+
+The **initialize phase** happens once at the start of an autonomous command. During this phase, you should configure any subsystems that you'll use and capture any state variables that you need to track. This makes sure that the robot is **ready** to carry out the autonomous step. In the example above, this happens in the `initialize();` which occurs immediately after the start of the autonomous step and transitions the robot to the `Ready` state. 
+
+The **execute phase** runs continuously during the active autonomous command. This phase is when the robot 'does' what it is supposed to during the command. During this phase you should send commands to motors, actute servos and pnuematic cylinders, and monitor sensors for feedback. In the example, this phase begins as soon as the robot is `Ready`. As long as the robot hasn't reached the target distance, power is applied to the motors and the robot is in the `Driving` state. From this state, there are two transitions. If the `Distance < 24"` then it applies power to the wheels to stay in the `Driving` state. If `Distance >= 24"`, then it should stop the motors and transition to the `Stopped` state.
+
+The **end phase** provides a chance to "clean up" and make sure that the subsytems are in the correct state before the autonomous command exits. This is a place to set motors to the correct state and reset sensors. In the example, this state begins with the `At Target` transition and involves stopping the motors. After this, the robot enters the `Stopped` state and then the autonomous command exits.
+
+In many cases, an autonomous command won't need to do something in all of the phases. For example, you may may only need to change the state of a servo, which can be done with a single command in the `initialize` phase without any `execute` phase. Even when you don't need all the phases, it's good practice to think through all the phases for each autonomous command.
+
+Now that we have a state diagram we can translate that into code. 
+
+First, for convenience, let's add a method that reports the average distance driven by averaging the distance driven by the two wheels. Add the following method to `RomiDrivetrain()`:
+
+``` java
+  public double getAverageDistanceInch() {
+    return (getLeftDistanceInch() + getRightDistanceInch())/2;
+  }
+```
+
+In `Robot()` we need a member variable to track which state we're in. A simple option is to use an integer to indicate which step is active. We can call this `autoState` and initialize it to 1 to represent the first state that it will enter. While we're adding member variables, we should also add one that represents the target distance we want to drive. You can add these two variables after the other variables at the top of the `Robot()` class definition:
+
+``` java
+  private static final double TARGET_DISTANCE = 24;  // inches
+  private int autoState = 1;
+```
+
+The autonomous routine can be handled by creating a new method in `Robot()` that defines the steps. Lets call this method `defaultAuto()`. This autonomous command will have to issue the correct commands to the robot depending on the value of the `autoState` variable. It will also have to decide when to move to the next state and update the value of `autoState` accordingly. We could use a long `if (autoState == 1) {} else if (autoState == 2) {} ...` block, but the Java `switch` block provides a clearer way of handling this type of flow control, so we'll use that instead. 
+
+> **JAVA Concept: `switch` and `case`**
+>
+> The Java `switch()` block allows the program to branch based on the value of a variable or return from a method call. Each value is represented by a `case` statement followed by the code that should run for that value.
+
+In `Robot()` after the `autonomousPeriodic()` method, create a new method called `defaultAuto()` and add a `switch` block:
+
+``` java
+private void defaultAuto() {
+  switch(autoState) {
+
+  }
+}
+```
+The next step is to add the cases that we want to handle. The first case is when `autoState` has a value of `1`. This corresponds to our `initialize` phase. We can reset the encoders to zero them to make it easy to know how far we've traveled from the starting point. To do this, place this code inside the `switch` block:
+
+``` java
+    case 1:  // initialize
+      m_drivetrain.resetEncoders();
+      autoState++;
+      break;
+```
+
+The `case 1:` statement indicates where the execution will start if `autoState` has a value of `1`. A call to `m_drivetrain.resetEncoders();` sets them to 0 so that we are ready to start. Since we've done everything we needed to do in this step, we increment the value of `autoState` using the `++` (increment) operator, to indicate that we are transitioning to the next state. The increment operator is a shorter way of writing `autoState = autoState + 1`. So now, `autoState` has a value of `2`. Finally, the `break` statement tells Java to skip all remaining lines in the `switch` block.
+
+With the `initialize` phase done, we now want to enter the `execute` phase and start driving forward. Following the `break` statement at the end of `case 1:` add `case 2:`
+
+``` java
+    case 2:  // execute (drive to target)
+      m_drivetrain.arcadeDrive(0.5, 0);
+      if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+        autoState++;
+      }
+      break;
+```
+
+This tells the robot to move forward at `0.5` power. It then checks to see how far the robot has traveled by checking the encoders. If it's gone far enough, then we move to the next state by incrementing `autoState`.
+
+Finally, we need to tell the robot that we want to stop moving once we've reached our desitination:
+
+
+``` java
+    case 3:  // end
+      m_drivetrain.arcadeDrive(0, 0);
+      autoState++;
+      break;
+```
+
+Finally, we should have a case that covers the situation when no other state is active. For now, we could call it `case 4:` however Java `switch` blocks have a `default:` case that will run whenever no other case matches. This offers the benefit that it will also handle a situation when `autoState` isn't set to a valid value.
+
+``` java
+    default:  // done
+      m_drivetrain.arcadeDrive(0, 0);  // feed the watchdog
+      break;
+```
+
+You'll notice that we still call `m_drivetrain.arcadeDrive(0,0)`. This makes sure that the motors are definitely stopped, and it also keeps the watchdog happy. 
+
+> **WPILib Concept: the watchdog**
+>
+> The watchdog is a safety feature on the RoboRIO that makes sure that the motors are being updated regularly by the code. If the code were to crash, the motors might be left in a powered state without any control. The watchdog monitors how long it has been since the motors were sent a command and disabled the motors if it has been too long (by default 100 ms). Sending a command to the motors every cycle "feeds" the watchdog and keeps it happy.
+
+You should now have a `defaultAuto()` method that looks like:
+
+``` java
+private void defaultAuto() {
+  switch(autoState) {
+    case 1:  // initialize
+      m_drivetrain.resetEncoders();
+      autoState++;
+      break;
+    case 2:  // execute (drive to target)
+      m_drivetrain.arcadeDrive(0.5, 0);
+      if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+        autoState++;
+      }
+      break;
+    case 3:  // end
+      m_drivetrain.arcadeDrive(0, 0);
+      autoState++;
+      break;
+    default:  // done
+      m_drivetrain.arcadeDrive(0, 0);  // feed the watchdog
+      break;
+  }
+}
+```
+
+We can run this method when Autonomous is enabled by adding a call to it in `autonomousPeriodic()`. When you look at `autonomousPeriodic()` you'll notice that it also uses a `switch` block. This is done to allow the drive team to select different autonomous routines from the dashboard. We can add the call to the `default:` case so that `autonomousPeriodic()` now looks like:
+
+``` java
+/** This function is called periodically during autonomous. */
+@Override
+public void autonomousPeriodic() {
+  switch (m_autoSelected) {
+    case kCustomAuto:
+      // Put custom auto code here
+      break;
+    case kDefaultAuto:
+    default:
+      defaultAuto();
+      break;
+  }
+}
+```
+
+You can now connect to a Romi and test this code.

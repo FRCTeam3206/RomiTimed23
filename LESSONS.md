@@ -222,7 +222,7 @@ stateDiagram-v2
   off --> on: move up
   on --> off: move down
 ```
-A [state diagram](https://en.wikipedia.org/wiki/State_diagram) helps you keep track of what states a system can be in and what causes it to move from one system to another. Each state is represented by a box and each transition is an arrow leading from one box to another.
+A [state diagram](https://en.wikipedia.org/wiki/State_diagram) helps you keep track of what states a system can be in and what causes it to move from one state to another. Each state is represented by a box and each transition is an arrow leading from one box to another.
 
 When the robot is operating autonomously, it will need some form of feedback to "know" when to transistion from one state to the next. This feedback could come from a timer running on the robot, a sensor measuring the internal state (such as the wheel encoders or a gyroscope), or a sensor detecting an external stimulus (such as a color sensor detecting a game piece or a camera measuring the position of an April Tag). 
 
@@ -236,7 +236,6 @@ You can use the encoders on your Romi wheels to measure how far the robot has tr
 title: Driving forward 24"
 ---
   stateDiagram-v2
-  %% direction LR
   ready: Ready
   drive: Driving
   stopped: Stopped

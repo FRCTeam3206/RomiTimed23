@@ -31,6 +31,8 @@ public class Robot extends TimedRobot {
   private static final double TARGET_DISTANCE = 24; //inches
   private int autoState = 1;
 
+  private RomiGyro m_gyro = new RomiGyro();
+
   
   /**
    * This function is run when the robot is first started up and should be used for any

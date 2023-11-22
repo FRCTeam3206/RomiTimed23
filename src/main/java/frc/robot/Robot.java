@@ -146,11 +146,14 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+    // Reset encoders
     if (m_controller.getStartButton()) {
       teleopEncoders.ResetEncoders();
     }
     speed = -0.8 * m_controller.getLeftY();
     rotate = 0.7 * m_controller.getRightX();
+
     // b deactivates slower backwards, x activates it, does slower backward if slowerBackwards is true
     if (m_controller.getBButton()) {
       slowerBackwards = false;
@@ -160,6 +163,7 @@ public class Robot extends TimedRobot {
     if (slowerBackwards && speed < 0) {
       speed *= 0.7;
     }
+
     // y activates slow mode, a deactivates slow mode, does slow mode if slowMode is true
     if (m_controller.getYButton()) {
       slowMode = true;
@@ -169,6 +173,8 @@ public class Robot extends TimedRobot {
     if (slowMode) {
       speed *= 0.7;
     }
+
+    // Drive based on variables set
     m_drivetrain.arcadeDrive(speed, rotate);
 
     // This is supposed to make the Romi automatically turn to an angle based on POV input, but it's not working yet.

@@ -52,4 +52,8 @@ public class RomiDrivetrain {
   public double getRightDistanceInch() {
     return m_rightEncoder.getDistance();
   }
+
+  public double getAverageDistanceInch() {
+    return (getLeftDistanceInch() + getRightDistanceInch()) / 2;
+  }
 }

@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
     m_drivetrain.resetEncoders();
   }
 
-  private void defaultAuto() { //simple auton structure to drive forward
+  private void defaultAuto() { // very simple auton structure to drive forward (PID)
     switch(autoState) {
       case 1: //initialize
         m_drivetrain.resetEncoders();

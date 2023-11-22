@@ -24,6 +24,7 @@ public class Robot extends TimedRobot {
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
 
   private static final double TARGET_DISTANCE = 12; // inches
+  private static final double TARGET_ANGLE = 90; //degrees
   private int autoState = 1;
 
   private RomiGyro m_gyro = new RomiGyro();
@@ -72,13 +73,14 @@ public class Robot extends TimedRobot {
   }
 
   private void defaultAuto() { // very simple auton structure to drive forward (PID)
+    double error;
     switch(autoState) {
       case 1: //initialize
         m_drivetrain.resetEncoders();
         autoState++;
         break;
       case 2: //execute (drive to target)
-        double error = TARGET_DISTANCE - m_drivetrain.getAverageDistanceInch();
+        error = TARGET_DISTANCE - m_drivetrain.getAverageDistanceInch();
         if (error > 1){
           error = 1;
         }
@@ -88,6 +90,25 @@ public class Robot extends TimedRobot {
         }
         break;
       case 3: //end
+        m_drivetrain.arcadeDrive(0, 0);
+        autoState++;
+        break;
+      case 4: //initialize turn
+        m_gyro.reset();
+        autoState++;
+        break;
+      case 5:
+        error = TARGET_ANGLE - m_gyro.getAngle();
+        error = error/10;
+        if (error > 1) {
+          error = 1;
+        }
+        m_drivetrain.arcadeDrive(0, 0.5*error);
+        if (Math.abs(error) < 0.2) {
+          autoState++;
+        }
+        break;
+      case 6:
         m_drivetrain.arcadeDrive(0, 0);
         autoState++;
         break;

@@ -27,7 +27,6 @@ public class Robot extends TimedRobot {
 
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(0);
-<<<<<<< HEAD
 
   private static final double TARGET_DISTANCE = 24; //inches
   private static final double TARGET_ANGLE = 90; // degrees
@@ -35,8 +34,6 @@ public class Robot extends TimedRobot {
 
   private RomiGyro m_gyro = new RomiGyro();
 
-=======
->>>>>>> 9e63fb2034403a22c377e41a947f42ef894af1dc
   
   /**
    * This function is run when the robot is first started up and should be used for any

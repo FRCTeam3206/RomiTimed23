@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(0);
 
-  private static vinal double TARGET_DISTANCE = 24; //inches
+  private static final double TARGET_DISTANCE = 24; //inches
   private int autoState = 1;
 
   
@@ -86,6 +86,7 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
+      defaultAuto();
         // Put default auto code here
         break;
     }
@@ -115,7 +116,7 @@ public class Robot extends TimedRobot {
       break;
       }
     }
-  }
+  
 
   /** This function is called once when teleop is enabled. */
   @Override

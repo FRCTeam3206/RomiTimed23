@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
-  private static final double TARGET_DISTANCE = 24; // inches
+  private static final double TARGET_DISTANCE = 12; // inches
   private int autoState = 1;
 
   /**
@@ -80,7 +80,7 @@ public class Robot extends TimedRobot {
           error = 1;
         }
         m_drivetrain.arcadeDrive(0.5*error, 0);
-        if (error < 0.5) {
+        if (Math.abs(error) < 0.01) {
           autoState++;
         }
         break;

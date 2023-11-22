@@ -39,6 +39,9 @@ public class Robot extends TimedRobot {
   private double leftEncoderOffset = 0;
   private double rightEncoderOffset = 0;
 
+  private static final double TARGET_DISTANCE = 24;
+  private int autoState = 1;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.

@@ -22,8 +22,11 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
+
   private static final double TARGET_DISTANCE = 12; // inches
   private int autoState = 1;
+
+  private RomiGyro m_gyro = new RomiGyro();
 
   /**
    * This function is run when the robot is first started up and should be used for any

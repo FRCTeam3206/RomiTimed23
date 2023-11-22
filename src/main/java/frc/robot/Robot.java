@@ -92,8 +92,12 @@ public class Robot extends TimedRobot {
         autoState++;
         break;
       case 2:  // execute (drive to target)
-        m_drivetrain.arcadeDrive(0.5, 0);
-        if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+        double error = TARGET_DISTANCE - m_drivetrain.getAverageDistanceInch();
+        if (error > 1) {
+          error = 1;
+        }
+        m_drivetrain.arcadeDrive(0.5*error, 0);
+        if (Math.abs(error) < 0.01) {
           autoState++;
         }
         break;

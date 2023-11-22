@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
 
     m_drivetrain.resetEncoders();
   }
+
   private void defaultAuto() { //simple auton structure to drive forward
     switch(autoState) {
       case 1: //initialize
@@ -85,6 +86,7 @@ public class Robot extends TimedRobot {
         break;
     }
   }
+  
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {

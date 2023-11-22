@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-
+  private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
 
   /**

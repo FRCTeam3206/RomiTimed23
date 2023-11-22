@@ -100,7 +100,7 @@ public class Robot extends TimedRobot {
 
       case 2: //execute (drive to target)
       m_drivetrain.arcadeDrive(0.5, 0);
-      if (m_drivetrain.getAverageDIstanceInch() >= TARGET_DISTANCE) {
+      if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
         autoState++;
       }
       break;

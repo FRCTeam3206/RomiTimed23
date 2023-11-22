@@ -45,15 +45,37 @@ public class RomiDrivetrain {
     m_rightEncoder.reset();
   }
 
-  public double getLeftDistanceInch() {
+  public double getRawLeftDistanceInch() {
     return m_leftEncoder.getDistance();
   }
 
-  public double getRightDistanceInch() {
+  public double getRawRightDistanceInch() {
     return m_rightEncoder.getDistance();
   }
 
-  public double getAverageDistanceInch() {
-    return (getLeftDistanceInch() + getRightDistanceInch()) / 2;
+  public double getRawAverageDistanceInch() {
+    return (getRawLeftDistanceInch() + getRawRightDistanceInch()) / 2;
+  }
+
+  public class OffsetEncodersObject {
+    private double leftOffset;
+    private double rightOffset;
+    public OffsetEncodersObject() {
+      leftOffset = getRawLeftDistanceInch();
+      rightOffset = getRawRightDistanceInch();
+    }
+    public void ResetEncoders() {
+      leftOffset = getRawLeftDistanceInch();
+      rightOffset = getRawRightDistanceInch();
+    }
+    public double getLeftDistanceInch() {
+      return getRawLeftDistanceInch() - leftOffset;
+    }
+    public double getRightDistanceInch() {
+      return getRawRightDistanceInch() - rightOffset;
+    }
+    public double getAverageDistanceInch() {
+      return getLeftDistanceInch() - getRightDistanceInch();
+    }
   }
 }

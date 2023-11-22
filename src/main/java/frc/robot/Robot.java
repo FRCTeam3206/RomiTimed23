@@ -20,7 +20,7 @@ public class Robot extends TimedRobot {
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> m_autonChooser = new SendableChooser<>();
 
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(Constants.InputDevices.XBOX_CONTROLLER);
@@ -36,11 +36,12 @@ public class Robot extends TimedRobot {
   private double turnDistance;
   private double turnGoal;
 
-  private double leftEncoderOffset = 0;
-  private double rightEncoderOffset = 0;
-
   private static final double TARGET_DISTANCE = 24;
   private int autoState = 1;
+  private RomiDrivetrain.OffsetEncodersObject autoEncoders = m_drivetrain.new OffsetEncodersObject();
+  private RomiDrivetrain.OffsetEncodersObject teleopEncoders = m_drivetrain.new OffsetEncodersObject();
+
+  private String currentMode = "none";
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -48,9 +49,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
+    m_autonChooser.setDefaultOption("Default Auto", kDefaultAuto);
+    m_autonChooser.addOption("My Auto", kCustomAuto);
+    SmartDashboard.putData("Auto choices", m_autonChooser);
   }
 
   /**
@@ -62,8 +63,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Left Distance (in)", m_drivetrain.getLeftDistanceInch() - leftEncoderOffset);
-    SmartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRightDistanceInch() - rightEncoderOffset);
+    switch (currentMode) {
+      case "auton":
+        SmartDashboard.putNumber("Left Distance (in)", autoEncoders.getLeftDistanceInch());
+        SmartDashboard.putNumber("Right Distance (in)", autoEncoders.getRightDistanceInch());
+      case "teleop":
+        SmartDashboard.putNumber("Left Distance (in)", teleopEncoders.getLeftDistanceInch());
+        SmartDashboard.putNumber("Right Distance (in)", teleopEncoders.getRightDistanceInch());
+      default:
+        SmartDashboard.putNumber("Left Distance (in)", m_drivetrain.getRawLeftDistanceInch());
+        SmartDashboard.putNumber("Right Distance (in)", m_drivetrain.getRawRightDistanceInch());
+    }
   }
   /**
    * This autonomous (along with the chooser code above) shows how to select between different
@@ -77,10 +87,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    currentMode = "auton";
+    m_autoSelected = m_autonChooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
-
     m_drivetrain.resetEncoders();
   }
 
@@ -92,8 +102,32 @@ public class Robot extends TimedRobot {
         // Put custom auto code here
         break;
       case kDefaultAuto:
+        defaultAuto();
+        break;
       default:
         // Put default auto code here
+        break;
+    }
+  }
+
+  private void defaultAuto() {
+    switch (autoState) {
+      case 1:
+        autoEncoders.ResetEncoders();
+        autoState++;
+        break;
+      case 2:
+        m_drivetrain.arcadeDrive(0.5, 0);
+        if (autoEncoders.getAverageDistanceInch() >= TARGET_DISTANCE) {
+          autoState++;
+        }
+        break;
+      case 3:
+        m_drivetrain.arcadeDrive(0, 0);
+        autoState++;
+        break;
+      default:
+        m_drivetrain.arcadeDrive(0, 0); // feed the watchdog
         break;
     }
   }
@@ -101,14 +135,14 @@ public class Robot extends TimedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
- }
+    currentMode = "teleop";
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
     if (m_controller.getStartButton()) {
-      leftEncoderOffset = m_drivetrain.getLeftDistanceInch();
-      rightEncoderOffset = m_drivetrain.getRightDistanceInch();
+      teleopEncoders.ResetEncoders();
     }
     speed = -0.8 * m_controller.getLeftY();
     rotate = 0.7 * m_controller.getRightX();
@@ -139,19 +173,19 @@ public class Robot extends TimedRobot {
         turnAngle = m_controller.getPOV();
       }
       turnDistance = distWheelsInch * Math.PI * (turnAngle / 180);
-      turnGoal = m_drivetrain.getLeftDistanceInch() - m_drivetrain.getRightDistanceInch() + turnDistance;
+      turnGoal = m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch() + turnDistance;
     }
     // change rotation to go to angle
     if (turnGoalSet) {
       if (turnGoal > 0) { // for turning right or 180
-        if ((m_drivetrain.getLeftDistanceInch() - m_drivetrain.getRightDistanceInch()) < turnGoal) { // goal hasn't been reached yet
-          rotate = 0.7 * ((turnGoal - ((m_drivetrain.getLeftDistanceInch() - m_drivetrain.getRightDistanceInch()))) / (distWheelsInch * Math.PI / (turnAngle / 360))) + 0.3;
+        if ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()) < turnGoal) { // goal hasn't been reached yet
+          rotate = 0.7 * ((turnGoal - ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()))) / (distWheelsInch * Math.PI / (turnAngle / 360))) + 0.3;
         } else { // goal has been reached
           turnGoalSet = false;
         }
       } else { // for turning left
-        if ((m_drivetrain.getLeftDistanceInch() - m_drivetrain.getRightDistanceInch()) > turnGoal) { // goal hasn't been reached yet
-          rotate = -0.7 * ((turnGoal - (m_drivetrain.getLeftDistanceInch() - m_drivetrain.getRightDistanceInch())) / (distWheelsInch * Math.PI / (-turnAngle / 360))) + 0.3;
+        if ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()) > turnGoal) { // goal hasn't been reached yet
+          rotate = -0.7 * ((turnGoal - (m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch())) / (distWheelsInch * Math.PI / (-turnAngle / 360))) + 0.3;
         } else { // goal has been reached
           turnGoalSet = false;
         }
@@ -179,7 +213,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    currentMode = "disabled";
+  }
 
   /** This function is called periodically when disabled. */
   @Override
@@ -187,7 +223,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when test mode is enabled. */
   @Override
-  public void testInit() {}
+  public void testInit() {
+    currentMode = "test";
+  }
 
   /** This function is called periodically during test mode. */
   @Override

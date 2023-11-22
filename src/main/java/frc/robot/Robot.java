@@ -8,6 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
@@ -23,7 +24,8 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_autonChooser = new SendableChooser<>();
 
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
-  private XboxController m_controller = new XboxController(Constants.InputDevices.XBOX_CONTROLLER);
+  private final RomiGyro m_gyro = new RomiGyro();
+  private final XboxController m_controller = new XboxController(Constants.InputDevices.XBOX_CONTROLLER);
 
   private double speed;
   private double rotate;
@@ -38,6 +40,7 @@ public class Robot extends TimedRobot {
   // private double turnGoal;
 
   private static final double TARGET_DISTANCE = 12;
+  private static final int TARGET_ANGLE = 90;
   private int autoState = 1;
   private RomiDrivetrain.OffsetEncodersObject autoEncoders = m_drivetrain.new OffsetEncodersObject();
   private RomiDrivetrain.OffsetEncodersObject teleopEncoders = m_drivetrain.new OffsetEncodersObject();
@@ -112,13 +115,14 @@ public class Robot extends TimedRobot {
   }
 
   private void defaultAuto() {
+    double error;
     switch (autoState) {
       case 1:
         autoEncoders.ResetEncoders();
         autoState++;
         break;
       case 2:
-        double error = TARGET_DISTANCE - autoEncoders.getAverageDistanceInch();
+        error = TARGET_DISTANCE - autoEncoders.getAverageDistanceInch();
         if (error > 1) {
           error = 1;
         }
@@ -131,6 +135,23 @@ public class Robot extends TimedRobot {
         m_drivetrain.arcadeDrive(0, 0);
         autoState++;
         break;
+      case 4:
+        m_gyro.reset();
+        autoState++;
+        break;
+      case 5:
+        error = TARGET_ANGLE - m_gyro.getAngle();
+        error /= 10;
+        if (error > 1) {
+          error = 1;
+        }
+        m_drivetrain.arcadeDrive(0, -0.5*error);
+        if (Math.abs(error) < 0.2) {
+          autoState++;
+          break;
+        }
+      case 6:
+        m_drivetrain.arcadeDrive(0, 0);
       default:
         m_drivetrain.arcadeDrive(0, 0); // feed the watchdog
         break;

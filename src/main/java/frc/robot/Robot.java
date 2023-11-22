@@ -22,6 +22,8 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
+  private static final double TARGET_DISTANCE = 24; // inches
+  private int autoState = 1;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -62,7 +64,27 @@ public class Robot extends TimedRobot {
 
     m_drivetrain.resetEncoders();
   }
-
+  private void defaultAuto() { //simple auton structure to drive forward
+    switch(autoState) {
+      case 1: //initialize
+        m_drivetrain.resetEncoders();
+        autoState++;
+        break;
+      case 2: //execute (drive to target)
+        m_drivetrain.arcadeDrive(0.5, 0);
+        if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+          autoState++;
+        }
+        break;
+      case 3: //end
+        m_drivetrain.arcadeDrive(0, 0);
+        autoState++;
+        break;
+      default: //done
+        m_drivetrain.arcadeDrive(0, 0); //feed the watchdog
+        break;
+    }
+  }
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
@@ -72,8 +94,9 @@ public class Robot extends TimedRobot {
         break;
       case kDefaultAuto:
       default:
-        // Put default auto code here
+        defaultAuto();
         break;
+
     }
   }
 

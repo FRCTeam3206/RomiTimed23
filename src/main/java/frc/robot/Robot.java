@@ -27,6 +27,10 @@ public class Robot extends TimedRobot {
 
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(0);
+
+  private static vinal double TARGET_DISTANCE = 24; //inches
+  private int autoState = 1;
+
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -84,6 +88,32 @@ public class Robot extends TimedRobot {
       default:
         // Put default auto code here
         break;
+    }
+  }
+
+  private void defaultAuto() {
+    switch(autoState) {
+      case 1: //initialize
+      m_drivetrain.resetEncoders();
+      autoState++;
+      break;
+
+      case 2: //execute (drive to target)
+      m_drivetrain.arcadeDrive(0.5, 0);
+      if (m_drivetrain.getAverageDIstanceInch() >= TARGET_DISTANCE) {
+        autoState++;
+      }
+      break;
+
+      case 3: //end
+      m_drivetrain.arcadeDrive (0,0);
+      autoState++;
+      break;
+
+      default: //done runs whenever none of the case values match
+      m_drivetrain.arcadeDrive(0,0); //feed the watchdog
+      break;
+      }
     }
   }
 

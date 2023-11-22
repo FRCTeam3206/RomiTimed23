@@ -7,7 +7,13 @@
   },
   "NetworkTables": {
     "transitory": {
+      "Shuffleboard": {
+        "open": true
+      },
       "SmartDashboard": {
+        "Auto choices": {
+          "open": true
+        },
         "open": true
       }
     }

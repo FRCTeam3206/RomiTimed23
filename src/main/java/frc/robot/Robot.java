@@ -30,13 +30,14 @@ public class Robot extends TimedRobot {
   private boolean slowerBackwards = true;
   private boolean slowMode = false;
 
-  public static final double distWheelsInch = 5.487402;
-  private boolean turnGoalSet = false;
-  private int turnAngle;
-  private double turnDistance;
-  private double turnGoal;
+  // These values are used for an unused part of the code
+  // public static final double distWheelsInch = 5.487402;
+  // private boolean turnGoalSet = false;
+  // private int turnAngle;
+  // private double turnDistance;
+  // private double turnGoal;
 
-  private static final double TARGET_DISTANCE = 24;
+  private static final double TARGET_DISTANCE = 12;
   private int autoState = 1;
   private RomiDrivetrain.OffsetEncodersObject autoEncoders = m_drivetrain.new OffsetEncodersObject();
   private RomiDrivetrain.OffsetEncodersObject teleopEncoders = m_drivetrain.new OffsetEncodersObject();
@@ -117,8 +118,12 @@ public class Robot extends TimedRobot {
         autoState++;
         break;
       case 2:
-        m_drivetrain.arcadeDrive(0.5, 0);
-        if (autoEncoders.getAverageDistanceInch() >= TARGET_DISTANCE) {
+        double error = TARGET_DISTANCE - autoEncoders.getAverageDistanceInch();
+        if (error > 1) {
+          error = 1;
+        }
+        m_drivetrain.arcadeDrive(0.5*error, 0);
+        if (error < 0.5) {
           autoState++;
         }
         break;
@@ -164,35 +169,39 @@ public class Robot extends TimedRobot {
     if (slowMode) {
       speed *= 0.7;
     }
-    // setup for going to angle
-    if (m_controller.getPOV() != -1) {
-      turnGoalSet = true;
-      if (m_controller.getPOV() > 180) {
-        turnAngle = m_controller.getPOV() - 360;
-      } else {
-        turnAngle = m_controller.getPOV();
-      }
-      turnDistance = distWheelsInch * Math.PI * (turnAngle / 180);
-      turnGoal = m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch() + turnDistance;
-    }
-    // change rotation to go to angle
-    if (turnGoalSet) {
-      if (turnGoal > 0) { // for turning right or 180
-        if ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()) < turnGoal) { // goal hasn't been reached yet
-          rotate = 0.7 * ((turnGoal - ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()))) / (distWheelsInch * Math.PI / (turnAngle / 360))) + 0.3;
-        } else { // goal has been reached
-          turnGoalSet = false;
-        }
-      } else { // for turning left
-        if ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()) > turnGoal) { // goal hasn't been reached yet
-          rotate = -0.7 * ((turnGoal - (m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch())) / (distWheelsInch * Math.PI / (-turnAngle / 360))) + 0.3;
-        } else { // goal has been reached
-          turnGoalSet = false;
-        }
-      }
-    }
     m_drivetrain.arcadeDrive(speed, rotate);
 
+    // This is supposed to make the Romi automatically turn to an angle based on POV input, but it's not working yet.
+    // // setup for going to angle
+    // if (m_controller.getPOV() != -1) {
+    //   turnGoalSet = true;
+    //   if (m_controller.getPOV() > 180) {
+    //     turnAngle = m_controller.getPOV() - 360;
+    //   } else {
+    //     turnAngle = m_controller.getPOV();
+    //   }
+    //   turnDistance = distWheelsInch * Math.PI * (turnAngle / 180);
+    //   turnGoal = m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch() + turnDistance;
+    // }
+    // // change rotation to go to angle
+    // if (turnGoalSet) {
+    //   if (turnGoal > 0) { // for turning right or 180
+    //     if ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()) < turnGoal) { // goal hasn't been reached yet
+    //       rotate = 0.7 * ((turnGoal - ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()))) / (distWheelsInch * Math.PI / (turnAngle / 360))) + 0.3;
+    //     } else { // goal has been reached
+    //       turnGoalSet = false;
+    //     }
+    //   } else { // for turning left
+    //     if ((m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch()) > turnGoal) { // goal hasn't been reached yet
+    //       rotate = -0.7 * ((turnGoal - (m_drivetrain.getRawLeftDistanceInch() - m_drivetrain.getRawRightDistanceInch())) / (distWheelsInch * Math.PI / (-turnAngle / 360))) + 0.3;
+    //     } else { // goal has been reached
+    //       turnGoalSet = false;
+    //     }
+    //   }
+    // }
+    // m_drivetrain.arcadeDrive(speed, rotate);
+
+    // This code can probably be ignored now
     // // Changes mode based on button pressed (Y for slow mode and A for normal)
     // if (m_controller.getYButton() == true) {
     //   mode = "slow";

@@ -22,6 +22,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
+  private final XboxController m_controller = new XboxController(0);
 
   private static final double TARGET_DISTANCE = 12; // inches
   private static final double TARGET_ANGLE = 90; //degrees

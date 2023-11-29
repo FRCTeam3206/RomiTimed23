@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import frc.robot.subsystems.RomiDrivetrain;
 
 public class RobotContainer {
-    RomiDrivetrain m_drive = new RomiDrivetrain();
-    CommandGenericHID m_xbox = new CommandGenericHID(Constants.XBOX_CONTROLLER_PORT);
+    RomiDrivetrain drive = new RomiDrivetrain();
+    CommandGenericHID xbox = new CommandGenericHID(Constants.Ports.XBOX_CONTROLLER_PORT);
 
     SendableChooser<Command> m_autonChooser = new SendableChooser<>();
 
@@ -17,10 +17,10 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        m_autonChooser.setDefaultOption("Test", new Command[] {});
+        // xbox.button(1).whileTrue();
     }
 
     private void auton() {
-        //
+        // m_autonChooser.setDefaultOption("Test", new Command[] {});
     }
 }

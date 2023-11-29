@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
   private static final double TARGET_DISTANCE = 54; //inches 54" x 48" for around the desk
   private static final double TARGET_DISTANCESHORT = 48; // shorter side of the desk
   private static final double TARGET_ANGLE = 90; // degrees
+  private static final double TARGET_ANGLEEND = 450; //degree for the last turn 450
   private int autoState = 1;
 
   private RomiGyro m_gyro = new RomiGyro();
@@ -176,9 +177,105 @@ public class Robot extends TimedRobot {
         if (error > 1)
         error = 1;
       }
-      
-      
+      m_drivetrain.arcadeDrive (0,-0.5*error);
+      if (Math.abs(error) < 0.2) {
+      autoState++;
+      }
+      break;
 
+      case 12: //end second turn
+      m_drivetrain.arcadeDrive(0,0);
+      autoState++;
+      break;
+
+      case 13: //initialize second long distance
+      m_drivetrain.resetEncoders();
+      autoState++;
+      break;
+
+      case 14: //drive the second long distance
+      error = TARGET_DISTANCE - m_drivetrain.getAverageDistanceInch();
+      if (error > 1) {
+        error = 1;
+      }
+      m_drivetrain.arcadeDrive(0.5*error, 0);
+      if (Math.abs(error) < 0.5) {
+        autoState++;
+      }
+      break;
+      
+      case 15: //end the second drive
+      m_drivetrain.arcadeDrive (0,0);
+      autoState++;
+      break;
+
+      case 16: //initialize the last turn
+      m_gyro.reset();
+      autoState++;
+      break;
+
+      case 17: // execute the final 90 degree turn
+      error = TARGET_ANGLE - m_gyro.getAngle();
+      error = error/10;
+      if (error > 0.2) {
+        if (error > 1)
+        error = 1;
+      }
+      m_drivetrain.arcadeDrive (0,-0.5*error);
+      if (Math.abs(error) < 0.2) {
+      autoState++;
+      }
+      break;
+
+      case 18: //end the last turn
+      m_drivetrain.arcadeDrive (0,0);
+      autoState++;
+      break;
+
+      case 19: //initialize last short distance
+      m_drivetrain.resetEncoders();
+      autoState++;
+      break;
+
+      case 20: //drive last short distance
+      error = TARGET_DISTANCESHORT - m_drivetrain.getAverageDistanceInch();
+      if (error > 1) {
+        error = 1;
+      }
+      m_drivetrain.arcadeDrive (0.5*error, 0);
+      if (Math.abs(error) < 0.5) {
+        autoState++;
+      }
+      break;
+
+      case 21: //end
+      m_drivetrain.arcadeDrive(0,0);
+      autoState++;
+      break;
+      
+      case 22: //initialize last turn to reset the position
+      m_gyro.reset();
+      autoState++;
+      break;
+
+      case 23: // execute 450 degree turn
+      error = TARGET_ANGLEEND - m_gyro.getAngle();
+      error = error/10;
+      if (error > 0.2) {
+        if (error > 1)
+        error = 1;
+      }
+      m_drivetrain.arcadeDrive (0,-0.5*error);
+      if (Math.abs(error) < 0.2) {
+      autoState++;
+      }
+      break;
+
+      case 24: //end
+      m_drivetrain.arcadeDrive(0,0);
+      autoState++;
+      break;
+      
       default: //done runs whenever none of the case values match
       m_drivetrain.arcadeDrive(0,0); //feed the watchdog
       break;

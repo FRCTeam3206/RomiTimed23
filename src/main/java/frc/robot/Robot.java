@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
         error = 1;
       }
       m_drivetrain.arcadeDrive(0, -0.5*error);
-      if (Math.abs(error) < 0.2) {
+      if (Math.abs(error) < 0.5) {
         autoState++;
       }
       break;
@@ -172,12 +172,11 @@ public class Robot extends TimedRobot {
       case 11: // second 90 degree turn
       error = TARGET_ANGLE - m_gyro.getAngle();
       error = error/10;
-      if (error > 0.2) {
-        if (error > 1)
+      if (error > 1) {
         error = 1;
       }
       m_drivetrain.arcadeDrive (0,-0.5*error);
-      if (Math.abs(error) < 0.2) {
+      if (Math.abs(error) < 0.5) {
       autoState++;
       }
       break;
@@ -216,12 +215,11 @@ public class Robot extends TimedRobot {
       case 17: // execute the final 90 degree turn
       error = TARGET_ANGLE - m_gyro.getAngle();
       error = error/10;
-      if (error > 0.2) {
-        if (error > 1)
+      if (error > 1) {
         error = 1;
       }
       m_drivetrain.arcadeDrive (0,-0.5*error);
-      if (Math.abs(error) < 0.2) {
+      if (Math.abs(error) < 0.5) {
       autoState++;
       }
       break;
@@ -260,12 +258,11 @@ public class Robot extends TimedRobot {
       case 23: // execute 90 degree turn
       error = TARGET_ANGLE - m_gyro.getAngle();
       error = error/10;
-      if (error > 0.2) {
-        if (error > 1)
+      if (error > 1) {
         error = 1;
       }
       m_drivetrain.arcadeDrive (0,-0.5*error);
-      if (Math.abs(error) < 0.2) {
+      if (Math.abs(error) < 0.5) {
       autoState++;
       }
       break;

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.sensors.RomiGyro;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,14 +23,10 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
-  private final XboxController m_controller = new XboxController(0);
   private static final double TARGET_DISTANCE = 48; //short side of table (how far we want to drive)
   private static final double TARGET_DISTANCE2 = 54; // long side of table
   private int autoState = 1; // during auton, romi will start at state/case 1, then case 2, etc.
 
-  private static final double TARGET_DISTANCE = 12; // inches
-  private static final double TARGET_ANGLE = 90; //degrees
-  private int autoState = 1;
 
   private RomiGyro m_gyro = new RomiGyro();
 
@@ -74,52 +71,6 @@ public class Robot extends TimedRobot {
     System.out.println("Auto selected: " + m_autoSelected);
 
     m_drivetrain.resetEncoders();
-  }
-
-  private void defaultAuto() { // very simple auton structure to drive forward (PID)
-    double error;
-    switch(autoState) {
-      case 1: //initialize
-        m_drivetrain.resetEncoders();
-        autoState++;
-        break;
-      case 2: //execute (drive to target)
-        error = TARGET_DISTANCE - m_drivetrain.getAverageDistanceInch();
-        if (error > 1){
-          error = 1;
-        }
-        m_drivetrain.arcadeDrive(0.5*error, 0);
-        if (Math.abs(error) < 0.01) {
-          autoState++;
-        }
-        break;
-      case 3: //end
-        m_drivetrain.arcadeDrive(0, 0);
-        autoState++;
-        break;
-      case 4: //initialize turn
-        m_gyro.reset();
-        autoState++;
-        break;
-      case 5:
-        error = TARGET_ANGLE - m_gyro.getAngle();
-        error = error/10;
-        if (error > 1) {
-          error = 1;
-        }
-        m_drivetrain.arcadeDrive(0, 0.5*error);
-        if (Math.abs(error) < 0.2) {
-          autoState++;
-        }
-        break;
-      case 6:
-        m_drivetrain.arcadeDrive(0, 0);
-        autoState++;
-        break;
-      default: //done
-        m_drivetrain.arcadeDrive(0, 0); //feed the watchdog
-        break;
-    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -185,7 +136,22 @@ public class Robot extends TimedRobot {
         break;
 
       case 4: //initialize
-        m_drivetrain.
+        m_gyro.reset();
+        autoState++;
+        break;
+      
+      case 5: //turn
+        m_drivetrain.arcadeDrive(0.5, 90);
+        autoState++;
+        break;
+
+      case 6: //stop
+        m_drivetrain.arcadeDrive(0,0);
+        autoState++;
+        break;
+
+      case 7: //initialize
+        
     }
   }
 }

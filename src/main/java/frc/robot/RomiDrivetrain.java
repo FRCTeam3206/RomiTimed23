@@ -54,10 +54,6 @@ public class RomiDrivetrain {
     return m_rightEncoder.getDistance();
   }
 
-<<<<<<< HEAD
-=======
-  // tells driver how far each wheel drives in glass during autonomous period
->>>>>>> e417443 (romi)
   public double getAverageDistanceInch() {
     return (getLeftDistanceInch() + getRightDistanceInch())/2;
   }

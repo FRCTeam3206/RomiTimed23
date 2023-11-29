@@ -8,6 +8,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.sensors.RomiGyro;
 import edu.wpi.first.wpilibj.XboxController;
 
 //tells it that you want to pull from the xbox controller file
@@ -28,7 +29,8 @@ public class Robot extends TimedRobot {
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private XboxController m_controller = new XboxController(0);
 
-  private static final double TARGET_DISTANCE = 24; //inches
+  private static final double TARGET_DISTANCE = 54; //inches 54" x 48" for around the desk
+  private static final double TARGET_DISTANCESHORT = 48; // shorter side of the desk
   private static final double TARGET_ANGLE = 90; // degrees
   private int autoState = 1;
 
@@ -98,12 +100,12 @@ public class Robot extends TimedRobot {
   private void defaultAuto() {
     double error;
     switch(autoState) {
-      case 1: //initialize
+      case 1: //initialize first drive distance
       m_drivetrain.resetEncoders();
       autoState++;
       break;
 
-      case 2: //execute (drive to target)
+      case 2: //execute (drive the longer distance)
       error = TARGET_DISTANCE - m_drivetrain.getAverageDistanceInch();
       if (error > 1) {
         error = 1;
@@ -114,17 +116,17 @@ public class Robot extends TimedRobot {
       }
       break;
 
-      case 3: //end
+      case 3: //end 
       m_drivetrain.arcadeDrive (0,0);
       autoState++;
       break;
 
-      case 4: // initialize turn
+      case 4: // initialize first right turn
       m_gyro.reset();
       autoState++;
       break;
 
-      case 5:
+      case 5: // turns 90 degrees
       error = TARGET_ANGLE - m_gyro.getAngle();
       error = error/10;
       if (error > 1) {
@@ -136,10 +138,46 @@ public class Robot extends TimedRobot {
       }
       break;
 
-      case 6:
+      case 6: //end
       m_drivetrain.arcadeDrive (0,0);
       autoState++;
       break;
+
+      case 7: //initialize drive second distance 
+      m_drivetrain.resetEncoders();
+      autoState++;
+      break;
+
+      case 8: //drive to shorter distance
+      error = TARGET_DISTANCESHORT - m_drivetrain.getAverageDistanceInch();
+      if (error > 1) {
+        error = 1;
+      }
+      m_drivetrain.arcadeDrive (.5*error, 0);
+      if (Math.abs(error) < 0.5) {
+        autoState++;
+      }
+      break;
+
+      case 9: // end
+      m_drivetrain.arcadeDrive (0,0);
+      autoState++;
+      break;
+
+      case 10: // initialize second turn
+      m_gyro.reset();
+      autoState++;
+      break;
+
+      case 11: // second 90 degree turn
+      error = TARGET_ANGLE - m_gyro.getAngle();
+      error = error/10;
+      if (error > 0.2) {
+        if (error > 1)
+        error = 1;
+      }
+      
+      
 
       default: //done runs whenever none of the case values match
       m_drivetrain.arcadeDrive(0,0); //feed the watchdog

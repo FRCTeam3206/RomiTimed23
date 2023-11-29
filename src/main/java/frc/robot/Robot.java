@@ -32,7 +32,6 @@ public class Robot extends TimedRobot {
   private static final double TARGET_DISTANCE = 54; //inches 54" x 48" for around the desk
   private static final double TARGET_DISTANCESHORT = 48; // shorter side of the desk
   private static final double TARGET_ANGLE = 90; // degrees
-  private static final double TARGET_ANGLEEND = 450; //degree for the last turn 450
   private int autoState = 1;
 
   private RomiGyro m_gyro = new RomiGyro();
@@ -258,8 +257,8 @@ public class Robot extends TimedRobot {
       autoState++;
       break;
 
-      case 23: // execute 450 degree turn
-      error = TARGET_ANGLEEND - m_gyro.getAngle();
+      case 23: // execute 90 degree turn
+      error = TARGET_ANGLE - m_gyro.getAngle();
       error = error/10;
       if (error > 0.2) {
         if (error > 1)

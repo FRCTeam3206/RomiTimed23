@@ -23,6 +23,9 @@ public class Robot extends TimedRobot {
   private XboxController m_controller = new XboxController (0);
   private final RomiDrivetrain m_drivetrain = new RomiDrivetrain();
   private final XboxController m_controller = new XboxController(0);
+  private static final double TARGET_DISTANCE = 48; //short side of table (how far we want to drive)
+  private static final double TARGET_DISTANCE2 = 54; // long side of table
+  private int autoState = 1; // during auton, romi will start at state/case 1, then case 2, etc.
 
   private static final double TARGET_DISTANCE = 12; // inches
   private static final double TARGET_ANGLE = 90; //degrees
@@ -160,4 +163,29 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  // will switch the romi between states/cases during auton
+  private void defaultAuto() {
+    switch(autoState){
+      case 1: //initialize, sets to 0 so we're ready to start
+        m_drivetrain.resetEncoders();
+        autoState++; //transitioning to next case/state
+        break; //tells Java to skip all remaining lines in "switch" block
+
+      case 2: //exectute (drive forward)
+        m_drivetrain.arcadeDrive(0.5,0); //speed of romi
+        if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+          autoState++;
+        }
+        break;
+
+      case 3: //stop driving
+        m_drivetrain.arcadeDrive(0,0);
+        autoState++;
+        break;
+
+      case 4: //initialize
+        m_drivetrain.
+    }
+  }
 }

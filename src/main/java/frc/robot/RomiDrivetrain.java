@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 public class RomiDrivetrain {
   private static final double kCountsPerRevolution = 1440.0;
   private static final double kWheelDiameterInch = 2.75591; // 70 mm
+  
 
   // The Romi has the left and right motors set to
   // PWM channels 0 and 1 respectively
@@ -53,6 +54,10 @@ public class RomiDrivetrain {
     return m_rightEncoder.getDistance();
   }
 
+<<<<<<< HEAD
+=======
+  // tells driver how far each wheel drives in glass during autonomous period
+>>>>>>> e417443 (romi)
   public double getAverageDistanceInch() {
     return (getLeftDistanceInch() + getRightDistanceInch())/2;
   }

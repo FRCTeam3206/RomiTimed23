@@ -118,40 +118,104 @@ public class Robot extends TimedRobot {
   // will switch the romi between states/cases during auton
   private void defaultAuto() {
     switch(autoState){
-      case 1: //initialize, sets to 0 so we're ready to start
-        m_drivetrain.resetEncoders();
-        autoState++; //transitioning to next case/state
-        break; //tells Java to skip all remaining lines in "switch" block
 
-      case 2: //exectute (drive forward)
-        m_drivetrain.arcadeDrive(0.5,0); //speed of romi
+      case 1: // initialize, sets to 0 so we're ready to start
+        m_drivetrain.resetEncoders();
+        autoState++; // transitioning to next case/state
+        break; // tells Java to skip all remaining lines in "switch" block
+
+      case 2: // drive forward width (from bottom left corner)
+        m_drivetrain.arcadeDrive(0.5,0); // speed of romi
         if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
           autoState++;
         }
         break;
 
-      case 3: //stop driving
+      case 3: // stop driving
         m_drivetrain.arcadeDrive(0,0);
         autoState++;
         break;
 
-      case 4: //initialize
+      case 4: // initialize
         m_gyro.reset();
         autoState++;
         break;
       
-      case 5: //turn
+      case 5: // turn
         m_drivetrain.arcadeDrive(0.5, 90);
         autoState++;
         break;
 
-      case 6: //stop
+      case 6: // stop
         m_drivetrain.arcadeDrive(0,0);
         autoState++;
         break;
 
-      case 7: //initialize
-        
+      case 7: // initialize
+        m_drivetrain.resetEncoders();
+        m_gyro.reset();
+        autoState++;
+        break;
+
+      case 8: // drive forward length (from top left corner)
+        m_drivetrain.arcadeDrive(0.5,0);
+        if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE2) {
+          autoState++;
+        }
+        break;
+
+      case 9: // stop driving
+        m_drivetrain.arcadeDrive(0,0);
+        autoState++;
+        break;
+
+      case 10: // initialize
+        m_gyro.reset();
+        autoState++;
+        break;
+      
+      case 11: // turn
+        m_drivetrain.arcadeDrive(0.5,90);
+        autoState++;
+        break;
+
+      case 12: // stop
+        m_drivetrain.arcadeDrive(0,0);
+        autoState++;
+        break;
+
+      case 13: // initialize
+        m_drivetrain.resetEncoders();
+        m_gyro.reset();
+        autoState++;
+        break;
+
+      case 14: // drive forward width (from top right corner)
+        m_drivetrain.arcadeDrive(0.5,0);
+        if (m_drivetrain.getAverageDistanceInch() >= TARGET_DISTANCE) {
+          autoState++;
+        }
+        break;
+
+      case 15: // stop driving
+        m_drivetrain.arcadeDrive(0,0);
+        autoState++;
+        break;
+
+      case 16: // initialize
+        m_gyro.reset();
+        autoState++;
+        break;
+
+      case 17: // turn
+        m_drivetrain.arcadeDrive(0.5,90);
+        autoState++;
+        break;
+
+      case 18: // stop
+        m_drivetrain.arcadeDrive(0,0);
+        autoState++;
+        break;
     }
   }
 }
